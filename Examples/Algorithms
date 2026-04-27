@@ -1,0 +1,351 @@
+Linear Regression – 
+Algorithm: Linear_Regression_Single_Feature
+Input:
+    X → vector of input feature values (size n)
+    Y → vector of target values (size n)
+Output:
+    β0 → intercept
+    β1 → slope
+Steps:
+1. Initialize:
+       n ← number of data points
+2. Compute mean values:
+       mean_x ← (Σ X[i]) / n
+       mean_y ← (Σ Y[i]) / n
+3. Compute slope (β1):
+       numerator ← Σ (X[i] - mean_x) * (Y[i] - mean_y)
+       denominator ← Σ (X[i] - mean_x)^2
+       β1 ← numerator / denominator
+4. Compute intercept (β0):
+       β0 ← mean_y - (β1 * mean_x)
+5. Return (β0, β1)
+End Algorithm
+
+Multiple Linear Regression – 
+Algorithm: Multiple_Linear_Regression_Normal_Equation
+Input:
+    X → matrix of input features (n × m)
+    Y → vector of target values (n × 1)
+Output:
+    θ → coefficient vector (m+1 × 1)
+Steps:
+1. Add bias column to X:
+       Create X_b by adding a column of 1s to X
+       (X_b becomes n × (m+1))
+2. Compute transpose:
+       X_T ← transpose(X_b)
+3. Compute matrix multiplication:
+       A ← X_T × X_b
+4. Compute inverse:
+       A_inv ← inverse(A)
+5. Compute coefficients:
+       θ ← A_inv × X_T × Y
+6. Return θ
+End Algorithm
+
+
+ 
+ID3
+Algorithm: ID3_Decision_Tree
+Input:
+    Dataset D with features X and target class Y
+    Attribute set A
+Output:
+    Decision Tree T
+Steps:
+1. If all samples in D belong to same class:
+       Return a leaf node with that class
+2. If attribute set A is empty:
+       Return a leaf node with majority class in D
+3. Compute entropy of dataset D:
+       Entropy(D) = − Σ p_i log2(p_i)
+4. For each attribute a in A:
+       a. Split dataset D based on attribute a
+       b. Compute entropy for each split
+       c. Compute Information Gain:
+              Gain(D, a) = Entropy(D) − Σ (|D_v| / |D|) * Entropy(D_v)
+5. Select attribute with highest Information Gain:
+       best_attr ← argmax Gain(D, a)
+6. Create root node with best_attr
+7. For each value v of best_attr:
+       a. Create subset D_v
+       b. If D_v is empty:
+              Add leaf node with majority class
+       c. Else:
+              Recursively call ID3 on D_v with remaining attributes
+8. Return tree T
+End Algorithm 
+
+
+KNN Classification
+Algorithm: KNN_Classification
+Input:
+    Training dataset D with features X and labels Y
+    New data point x
+    K → number of neighbors
+Output:
+    Predicted class label
+Steps:
+1. For each data point xi in dataset D:
+       a. Compute distance between x and xi
+          (e.g., Euclidean distance)
+2. Sort all data points based on distance (ascending)
+3. Select first K nearest neighbors
+4. Count class labels among K neighbors:
+       Find frequency of each class
+5. Assign class with highest frequency:
+       Y_pred ← majority class
+6. Return Y_pred
+End Algorithm
+
+Algorithm: Build_KNN_Model
+1. Load dataset
+2. Preprocess data (handle missing values, normalize features)
+3. Split into training and testing sets
+4. Choose value of K
+5. For each test sample:
+       Apply KNN_Classification
+6. Evaluate accuracy 
+
+
+
+KNN Regression
+Algorithm: KNN_Regression
+Input:
+    Training dataset D with features X and target values Y
+    New data point x
+    K → number of neighbors
+Output:
+    Predicted value Y_pred
+Steps:
+1. For each data point xi in dataset D:
+       a. Compute distance between x and xi
+          (e.g., Euclidean distance)
+2. Sort all data points based on distance (ascending)
+3. Select first K nearest neighbors
+4. Extract their target values:
+       Y1, Y2, ..., Yk
+5. Compute average:
+       Y_pred ← (Y1 + Y2 + ... + Yk) / K
+6. Return Y_pred
+End Algorithm
+
+
+
+Random Forest Ensemble 
+Algorithm: Random_Forest
+Input:
+    Dataset D with N instances and features X, labels Y
+    M → number of trees
+    m → number of features per split
+Output:
+    Random Forest model
+Steps:
+1. For i = 1 to M:
+       a. Create bootstrap sample Di:
+              Randomly sample N instances from D with replacement
+       b. Build decision tree Ti:
+              i. At each node:
+                     Randomly select m features from total features
+              ii. Choose best feature among m using split criterion
+                     (Gini Index / Information Gain)
+              iii. Split node into child nodes
+              iv. Repeat until stopping condition
+                     (max depth or pure node)
+       c. Store tree Ti
+2. End For
+3. Prediction for new sample x:
+       a. For each tree Ti:
+              predict yi
+       b. Combine predictions:
+              Classification → majority vote
+              Regression → average
+4. Return final prediction
+End Algorithm 
+
+
+
+Ada Boost
+Input:
+    Training dataset D = {(x1,y1), (x2,y2), ..., (xN,yN)}
+    Number of weak learners T
+Output:
+    Final strong classifier H(x)
+Steps:
+1. Initialize weights:
+       For i = 1 to N:
+              w_i ← 1/N
+2. For t = 1 to T:
+       a. Train weak learner h_t(x) using weights w
+       b. Compute weighted error:
+              ε_t ← Σ w_i where h_t(x_i) ≠ y_i
+       c. If ε_t > 0.5:
+              Stop training
+       d. Compute model weight:
+              α_t ← (1/2) * ln((1 − ε_t) / ε_t)
+       e. Update weights:
+              For i = 1 to N:
+                     If h_t(x_i) = y_i:
+                            w_i ← w_i * exp(−α_t)
+                     Else:
+                            w_i ← w_i * exp(α_t)
+       f. Normalize weights:
+              w_i ← w_i / Σ w_i
+3. End For
+4. Final prediction:
+       H(x) ← sign( Σ α_t * h_t(x) )
+5. Return H(x)
+
+
+
+
+K Means 
+Algorithm: K_Means
+Input:
+    Dataset D with N data points
+    K → number of clusters
+Output:
+    K clusters and their centroids
+Steps:
+1. Determine number of clusters K
+2. Initialize:
+       Randomly select K data points as initial centroids
+3. Repeat:
+       a. Assignment step:
+              For each data point xi:
+                     Compute distance to all centroids
+                     Assign xi to nearest centroid
+       b. Update step:
+              For each cluster j:
+                     Compute new centroid:
+                     μ_j ← mean of all points assigned to cluster j
+4. Until:
+       No change in cluster assignments (convergence)
+5. Return clusters and centroids
+End Algorithm
+
+
+
+
+PCA  
+Algorithm: PCA_Dimensionality_Reduction
+Input:
+    Dataset D with N samples and m features
+    k → number of principal components
+Output:
+    Reduced dataset with k components
+Steps:
+1. Load dataset D
+2. Standardize data:
+       For each feature:
+              subtract mean and divide by standard deviation
+3. Compute covariance matrix:
+       C ← (1/N) * (X^T × X)
+4. Compute eigenvalues and eigenvectors of C
+5. Sort eigenvectors:
+       Arrange eigenvectors in decreasing order of eigenvalues
+6. Select top k eigenvectors:
+       Form matrix W using top k eigenvectors
+7. Transform data:
+       X_reduced ← X × W
+8. Return reduced dataset X_reduced
+End Algorithm 
+
+
+
+SVM 
+I/P – Training Dataset D = {(x1,y1), (x2,y2), …..(xn,yn)} where yi € {-1, +1}
+O/P – Optimal hyperplane wT x + b =0
+Step 1 – 
+	Initialize weight vector w
+	Initialize bias b
+	Set learning rate α
+	Set Regularization parameter λ
+Step 2 – 
+	 If class = 0 -> convert to -1
+	If class = 1 -> keep as +1
+Step 3 – 
+For each iteration = each training sample xi
+Step 4- Check margin condition
+y_i (w⋅x_i+b)≥1
+Step 5 – if condition satisfied 
+ ω=w-α(2λw)
+        Step 6 – Else update weight and bias 
+ω=w-α(2λω-y_i x_i ) 
+b=b-αyⅈ
+Step 7 – Repeat until convergence 
+Step 8 – Decision Function 
+f(x)=sⅈgn(ω⋅x+b)
+if f(x)≥0→class+1
+Else -> class - 1 
+
+
+
+Logistic Regression
+Algorithm: Predict_Logistic
+Input:
+    X_new → new input data
+    θ → trained parameters
+Output:
+    Y_pred → predicted class (0 or 1)
+Steps:
+1. Add bias term:
+       X_new_b ← [1 X_new]
+2. Compute probability:
+       Z ← X_new_b × θ
+       P ← 1 / (1 + e^(−Z))
+3. Apply threshold:
+       If P ≥ 0.5:
+              Y_pred ← 1
+       Else:
+              Y_pred ← 0
+
+4. Return Y_pred
+End Algorithm
+
+
+Algorithm: Build_Logistic_Regression_Model
+Input:
+    Dataset D with features X and target Y (Y ∈ {0,1})
+Output:
+    Trained Logistic Regression Model
+Steps:
+1. Load dataset:
+       Read dataset D
+2. Preprocess data:
+       a. Handle missing values (if any)
+       b. Encode categorical variables (if present)
+       c. Normalize/standardize features (optional but recommended)
+3. Split dataset:
+       Divide D into training set and testing set
+       (e.g., 80% training, 20% testing)
+4. Initialize model parameters:
+       θ ← zero vector
+       Choose learning rate α
+       Set number of iterations
+5. Train model using Gradient Descent:
+       Repeat for k = 1 to iterations:
+            a. Compute linear combination:
+                   Z ← X_train × θ
+            b. Apply sigmoid function:
+                   Y_hat ← 1 / (1 + e^(−Z))
+
+            c. Compute error:
+                  error ← Y_hat − Y_train
+            d. Compute gradient:
+                   gradient ← (1/n) × (X_train^T × error)
+            e. Update parameters:
+                   θ ← θ − α × gradient
+6. Model is trained:
+       θ contains final weights
+7. Prediction on test data:
+       a. Compute:
+              Z ← X_test × θ
+              P ← 1 / (1 + e^(−Z))
+       b. Convert probability to class:
+              If P ≥ 0.5 → class = 1
+              Else → class = 0
+8. Evaluate model:
+       Compute accuracy, confusion matrix (optional)
+9. Return trained model and predictions
+End Algorithm
